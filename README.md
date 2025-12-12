@@ -212,7 +212,6 @@ Add this bucket policy:
 
 Open the Website Endpoint URL.
 
-https://kiran-forms.s3.ap-south-1.amazonaws.com/index.html
 
 🧑‍💻 Skills Demonstrated (Great for AWS Certification)
 
