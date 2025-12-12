@@ -15,9 +15,6 @@ This POC covers practical skills relevant for:
 
 AWS Cloud Practitioner (CLF-C02)
 
-AWS Developer Associate (DVA-C02)
-
-AWS Solutions Architect Associate (SAA-C03)
 
 🧱 Architecture Diagram
 User (Browser)
