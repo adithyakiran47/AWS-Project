@@ -147,18 +147,19 @@ CloudWatch logs the entire execution
 (Optional) SNS sends alerts if issues occur
 
 🔧 Lambda Function (Simplified Code Example)
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-const client = new SESClient({ region: "ap-south-1" });
+      import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-export const handler = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
+      const client = new SESClient({ region: "ap-south-1" });
+
+      export const handler = async (event) => {
+        try {
+    const data = JSON.parse(event.body);
 
     const params = {
       Destination: { ToAddresses: [process.env.DESTINATION_EMAIL] },
       Message: {
-        Body: { Text: { Data: `Name: ${body.name}\nEmail: ${body.email}\nMessage: ${body.message}` }},
+        Body: { Text: { Data: `Name: ${data.name}\nEmail: ${data.email}\nMessage:                   ${data.message}` }},
         Subject: { Data: "New Contact Form Submission" }
       },
       Source: process.env.SOURCE_EMAIL
@@ -169,19 +170,20 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ message: "Email sent!" })
+      body: JSON.stringify({ message: "Email sent successfully!" })
     };
 
-  } catch (error) {
-    console.error(error);
+        } catch (err) {
+    console.error("Error sending email:", err);
 
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ error: "Failed to send email" })
     };
-  }
-};
+        }
+      };
+
 
 🌐 Hosting the Frontend on S3
 
