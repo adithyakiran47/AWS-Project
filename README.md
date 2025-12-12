@@ -119,14 +119,14 @@ API Gateway → Lambda
 
 S3 public access policy
 
-📂 Project Structure
-/project-root
+📂/project-root
 │
 ├── index.html           # Frontend UI hosted on S3
 ├── README.md            # Documentation
 │
 └── lambda/
      └── index.js        # Lambda function code (SES email sender)
+
 
 🧪 How the Application Works
 
