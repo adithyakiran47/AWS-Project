@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact Me</title>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
     * {
       margin: 0;
@@ -27,30 +27,31 @@
 
     .glass-container {
       width: 100%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(15px);
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(18px);
       padding: 35px;
       border-radius: 18px;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
     }
 
     h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
       font-size: 28px;
       font-weight: 500;
-      letter-spacing: 1px;
     }
 
-    input, textarea {
+    p.subtext {
+      text-align: center;
+      font-size: 14px;
+      color: #a1a1aa;
+      margin-bottom: 20px;
+    }
+
+    input,
+    textarea {
       width: 100%;
       padding: 12px 14px;
       margin: 10px 0;
@@ -60,18 +61,6 @@
       color: #fff;
       font-size: 15px;
       outline: none;
-      transition: 0.3s ease;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #ccc;
-    }
-
-    input:focus,
-    textarea:focus {
-      background: rgba(255, 255, 255, 0.18);
-      box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
     }
 
     textarea {
@@ -86,21 +75,21 @@
       border: none;
       border-radius: 10px;
       background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: #fff;
+      color: white;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.3s ease;
     }
 
-    button:hover {
-      box-shadow: 0 0 12px rgba(99, 102, 241, 0.8);
-      transform: translateY(-2px);
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     #status {
       text-align: center;
       margin-top: 15px;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 500;
     }
 
     .success {
@@ -110,58 +99,80 @@
     .error {
       color: #f87171;
     }
+
+    .loading {
+      color: #facc15;
+    }
   </style>
 </head>
 
 <body>
+  <div class="glass-container">
+    <h2>Contact Me</h2>
+    <p class="subtext">
+      Feel free to reach out for collaborations or queries. I usually reply within 24 hours.
+    </p>
 
-<div class="glass-container">
-  <h2>Contact Me</h2>
+    <form id="contactForm">
+      <input type="text" name="name" placeholder="Your Full Name" required />
+      <input type="email" name="email" placeholder="Your Email Address" required />
+      <textarea name="message" placeholder="Write your message here..." required></textarea>
 
-  <form id="contactForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <textarea name="message" placeholder="Your Message" required></textarea>
-    <button type="submit">Send Message</button>
-  </form>
+      <button type="submit" id="submitBtn">Send Message</button>
+    </form>
 
-  <p id="status"></p>
-</div>
+    <!--  MESSAGE WILL APPEAR HERE -->
+    <p id="status"></p>
+  </div>
 
-<script>
-    console.log("Form Loaded");
+  <script>
+    
+    const API_URL = "URL HERE";
+    
 
-  const API_URL = "https://8hepwxxc1c.execute-api.ap-south-1.amazonaws.com/prod/contact";
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  document.getElementById("contactForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+      const status = document.getElementById("status");
+      const submitBtn = document.getElementById("submitBtn");
 
-    const status = document.getElementById("status");
-    status.textContent = "";
-    status.className = "";
+      status.textContent = "Sending message...";
+      status.className = "loading";
 
-    const data = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      message: e.target.message.value
-    };
+      submitBtn.disabled = true;
 
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      const data = {
+        name: e.target.name.value.trim(),
+        email: e.target.email.value.trim(),
+        message: e.target.message.value.trim()
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          //  SUCCESS CONFIRMATION MESSAGE
+          status.textContent =
+            " I’ve received your message. I’ll reach out to you soon.";
+          status.className = "success";
+          e.target.reset();
+        } else {
+          status.textContent =
+            "⚠ Something went wrong. Please try again later.";
+          status.className = "error";
+        }
+      } catch (err) {
+        status.textContent =
+          "⚠ Network error. Please check your connection.";
+        status.className = "error";
+      }
+
+      submitBtn.disabled = false;
     });
-
-    if (res.ok) {
-      status.textContent = "Message sent successfully!";
-      status.className = "success";
-      e.target.reset();
-    } else {
-      status.textContent = "Failed to send message.";
-      status.className = "error";
-    }
-  });
-</script>
-
+  </script>
 </body>
 </html>
